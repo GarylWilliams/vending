@@ -1,15 +1,11 @@
-const mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema
 
-const itemSchema = new mongoose.Schema({
-    description: {type:String, required:true},
-    cost: {type:Number, required:true},
-    quantity: {type:Number, required:true}
+const itemSchema = new Schema({
+      id: Number,
+      description: String,
+      cost: Number,
+      quantity: Number
+});
 
-})
-
-const Item = module.exports = mongoose.model('Item', itemSchema);
-
-module.exports.getItems = function(callback, limit){
-  Item.find(callback).limit(limit);
-}
+module.exports = mongoose.model("Item", itemSchema);

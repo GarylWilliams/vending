@@ -13,5 +13,14 @@
   "license": "ISC",
   "dependencies": {
     "supertest": "^3.0.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GarylWilliams/vending.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GarylWilliams/vending/issues"
+  },
+  "homepage": "https://github.com/GarylWilliams/vending#readme"
 }

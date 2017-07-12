@@ -1,46 +1,65 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const env = process.env.NODE_ENV || "development";
-const config = require("./config.json")[env];
-
+const express = require("express");
 const app = express();
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false}));
-
-const mongoose = require('mongoose');
+const bluebird = require("bluebird");
+const mongoose = require("mongoose");
 mongoose.Promise = require('bluebird');
-// Replace "test" with your database name.
-mongoose.connect(config.mongoURL);
+const Item = require("./models/items");
+const Purchase = require("./models/purchases");
+const nodeEnv = process.env.NODE_ENV || "development";
+const config = require("./config.json")[nodeEnv];
 
-Item =  require('./models/items')
+// mongoose.connect(config.mongoURL);
 
-
-app.get('/api/customer/items', function(req, res){
-  Item.getItems(function(err, item){
-    if(err){
-     throw err;
-    }
-    res.json(item);
+app.post('/api/vendor/items', function (req, res) {
+  var newItem = new Item({
+      id: 1,
+      description: "pork rinds",
+      cost: 65,
+      quantity: 4
+    })
+    newItem.save(newItem)
+      .then(function (newItem) {
+    res.status(201).json(newItem.toJSON());
   })
 });
 
-app.get('/api/vendor/purchase', function(req, res){
- Purchase.getPurchases(function(err, purchase){
-  if(err){
-    throw err;
-  }
-  res.json(purchase);
+app.get('/api/customer/items', function (req, res) {
+  Item.find()
+    .then(function (item) {
+        res.json(item);
+    })
+})
+
+app.post('/api/customer/purchases', function (req, res) {
+  var newPurchase = new Purchase({
+    item: "pork rinds",
+    item_id: 1,
+    quantity: 1,
+    money_given: 100,
+    money_required: 90
   })
+  newPurchase.save(newPurchase)
+    .then(function (newPurchase) {
+    res.status(201).json(newPurchase.toJSON());
+    })
+})
+
+app.get('/api/vendor/purchases', function (req, res) {
+    Purchase.find()
+      .then(function (purchase) {
+        res.json(purchase);
+      })
+})
+
+app.post('/api/customer/items/:itemId/purchases', function (req, res) {
+  Purchase.find({item_id: 1})
+    .then(function (purchase) {
+      res.json(purchase);
+    })
+})
+
+app.listen(3000, function(){
+  console.log("Successfully started express application!")
 });
-
-
-
-
-if (require.main === module) {
-  app.listen(27017, function(){
-    console.log('it works!');
-  })
-}
 
 module.exports = app;
